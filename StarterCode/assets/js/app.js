@@ -63,6 +63,7 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
     return circlesGroup;
   }
 
+
   // Updating circles group with new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
 
@@ -138,6 +139,24 @@ var circlesGroup = chartGroup.selectAll("circle")
 .attr("r", 15)
 .attr("fill", "dodgerblue")
 .attr("opacity", ".5");
+
+// Add state labels to the points
+var circleLabels = chartGroup.selectAll(null).data(povertyData).enter().append("text");
+
+circleLabels
+  .attr("x", function(d) {
+    return xLinearScale(d.poverty);
+  })
+  .attr("y", function(d) {
+    return yLinearScale(d.healthcare);
+  })
+  .text(function(d) {
+    return d.abbr;
+  })
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "10px")
+  .attr("text-anchor", "middle")
+  .attr("fill", "white");
 
 // Creating group for two x-axis labels
 var labelsGroup = chartGroup.append("g")
