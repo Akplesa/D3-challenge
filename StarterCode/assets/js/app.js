@@ -59,7 +59,7 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
     circlesGroup.transition()
       .duration(1000)
       .attr("cx", d => newXScale(d[chosenXAxis]));
-  
+
     return circlesGroup;
   }
 
@@ -77,10 +77,11 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     }
   
     var toolTip = d3.tip()
-      .attr("class", "tooltip")
+      .attr("class", "tooltip ")
       .offset([80, -60])
       .html(function(d) {
-        return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
+        return (`${d.state}<br>${label} ${d[chosenXAxis]}`)
+      
       });
   
     circlesGroup.call(toolTip);
@@ -92,7 +93,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
-  
+
     return circlesGroup;
   }
 
@@ -130,9 +131,11 @@ chartGroup.append("g")
 .call(leftAxis);
 
 // Appending initial circles
-var circlesGroup = chartGroup.selectAll("circle")
+var circlesGroup = chartGroup.selectAll(".circle-group")
 .data(povertyData)
 .enter()
+.append("g")
+.classed("circle-group", true)
 .append("circle")
 .attr("cx", d => xLinearScale(d[chosenXAxis]))
 .attr("cy", d => yLinearScale(d.healthcare))
@@ -141,12 +144,15 @@ var circlesGroup = chartGroup.selectAll("circle")
 .attr("opacity", ".5");
 
 // Add state labels to the points
-var circleLabels = chartGroup.selectAll(null).data(povertyData).enter().append("text");
+var circleLabels = chartGroup.selectAll(".circle-group").data(povertyData).enter().append("text");
 
 circleLabels
   .attr("x", function(d) {
-    return xLinearScale(d.poverty);
+    return xLinearScale(d[chosenXAxis]);
+    
+
   })
+
   .attr("y", function(d) {
     return yLinearScale(d.healthcare);
   })
@@ -157,7 +163,11 @@ circleLabels
   .attr("font-size", "10px")
   .attr("text-anchor", "middle")
   .attr("fill", "white");
+  
+  });
+  
 
+circlesGroup.call(toolTip);
 // Creating group for two x-axis labels
 var labelsGroup = chartGroup.append("g")
 .attr("transform", `translate(${width / 2}, ${height + 20})`);
